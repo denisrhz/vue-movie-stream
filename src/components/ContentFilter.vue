@@ -1,24 +1,19 @@
 <template>
     <div class="flex flex-wrap">
-        <div>
-            <input
-            type="search"
-            class="block w-64 p-1 text-sm text-gray-600 flex-auto rounded-sm border border-solid border-gray-700 bg-clip-padding px-3 font-normal leading-[1.6] outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-gray-600 focus:text-gray-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none"
-            :value="searchQuery"
-            placeholder="Search"
-            aria-label="Search"
-            aria-describedby="button-addon1" />
-        </div>
-        <MyDropdown>
-            <template #toggler>toggle</template>
+        <MyDropdown v-for="param in filterParams">
+            <template #toggler>{{ param.name }}</template>
             <MyDropdownContent>
-                <MyDropdownElement>
-                    <input id="checkbox1" type="checkbox" class="">
-                    <label for="checkbox1" class="mx-1">Bareare</label>
+                <MyDropdownElement v-for="element in param.elements">
+                    <input
+                    :id="param.type + element.value"
+                    :type="param.type"
+                    :value="element.value"
+                    v-model="param.checked">
+                    <label :for="param.type + element.value" class="mx-1">{{ element.name }}</label>
                 </MyDropdownElement>
             </MyDropdownContent>
         </MyDropdown>
-        <button class="px-2 py-1.5 text-sm text-start tracking-wide text-white capitalize transition-colors duration-300 transform bg-gray-700 rounded-sm hover:bg-gray-600 focus:outline-none">
+        <button @click="onClickFilter()" class="px-2 py-1.5 text-sm text-start tracking-wide text-white capitalize transition-colors duration-300 transform bg-gray-700 rounded-sm hover:bg-gray-600 focus:outline-none">
             <span class=""><font-awesome-icon :icon="['fas', 'filter']" /></span>
             Filter
         </button>
@@ -34,13 +29,58 @@ export default {
     components: { MyDropdown, MyDropdownContent, MyDropdownElement },
     data() {
         return {
-            searchQuery: "",
-            FilterParams: [
-                { name: "", type: "", items: [
-                    { name: "item1", isActive: false },
-                    { name: "item2", isActive: false }
-                ] }
-            ],
+            filterParams: {
+                genres: { 
+                    name: "Жанры", 
+                    type: "checkbox", 
+                    checked: [],
+                    elements: [],
+                },
+                sort_by: { 
+                    name: "Сортировать по", 
+                    type: "radio", 
+                    checked: [],
+                    elements: [
+                        { name: "Самые популярные", value: "popularity.desc" },
+                        { name: "Бюджет", value: "revenue.desc" },
+                        { name: "Самые новые", value: "primary_release.desc" },
+                        { name: "Средняя оценка", value: "vote_average.desc" },
+                        { name: "Кол-во оценок", value: "vote_count.desc" },
+                    ],
+                }
+            }
+        }
+    },
+    mounted() {
+        this.getGenres();
+    },
+    methods: {
+        getGenres() {
+            const options = {
+                method: 'GET',
+                headers: {
+                    accept: 'application/json',
+                    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4ZGNiOTBlYmY3ZDE5NmRkNWQyMjRmMzg4MWM4M2JjZCIsInN1YiI6IjY0Y2Q5NzA5NTQ5ZGRhMDExYzI3M2ZlOSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.8hREDgRimJl9MjrwuqXNP81ptiRYyIxma3ki19xQL8Y'
+                }
+            };
+            
+            fetch('https://api.themoviedb.org/3/genre/movie/list?language=ru', options)
+            .then(response => response.json())
+            .then((response) => {
+                response.genres.forEach(genre => {
+                    this.filterParams.genres.elements.push({ name: genre.name, value: genre.id });
+                });
+            }
+            )
+            .catch(err => console.error(err));
+        },
+        onClickFilter() {
+            const params = {};
+            for(let key in this.filterParams) {
+                params[key] = this.filterParams[key].checked;
+            }
+            console.log(params);
+            this.$emit("filterchanged", params);
         }
     }
 }

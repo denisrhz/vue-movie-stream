@@ -4,7 +4,9 @@
             <div class="">
                 <h1 class="my-3 text-2xl text-primary">Смотреть сериалы онлайн</h1>
                 <p class="text-sm">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad error ut ducimus voluptate fugit rem dolorem cupiditate architecto vitae soluta a, odio neque? Fugiat, nobis delectus? Reprehenderit impedit modi obcaecati!</p>
-                <ContentFilter/>
+                <ContentFilter
+                @filterchanged="onFilterChange"
+                />
                 <ContentGrid v-if="!isMoviesLoading" :movies="movies"/>
                 <div v-else>
                     <h1 class="text-red-600">Loading...</h1>
@@ -24,6 +26,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 import ContentFilter from '../components/ContentFilter.vue';
 import ContentGrid from '../components/ContentGrid.vue';
 import ContentList from '../components/ContentList.vue';
@@ -36,7 +40,8 @@ export default {
             movies: [],
             isMoviesLoading: false,
             currentPage: 1,
-            totalPages: 1
+            totalPages: 1,
+            filterParams: {}
         }
     },
     mounted() {
@@ -46,6 +51,18 @@ export default {
         getMovies() {
             const options = {
                 method: 'GET',
+                url: 'https://api.themoviedb.org/3/discover/movie',
+                params: {
+                    include_adult: 'false',
+                    include_video: 'false',
+                    language: 'ru-RU',
+                    page: this.currentPage,
+                    primary_release_year: '',
+                    sort_by: this.filterParams.sort_by,
+                    'vote_average.gte': '',
+                    with_origin_country: '',
+                    with_genres: this.filterParams?.genres?.join("|"),
+                },
                 headers: {
                     accept: 'application/json',
                     Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4ZGNiOTBlYmY3ZDE5NmRkNWQyMjRmMzg4MWM4M2JjZCIsInN1YiI6IjY0Y2Q5NzA5NTQ5ZGRhMDExYzI3M2ZlOSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.8hREDgRimJl9MjrwuqXNP81ptiRYyIxma3ki19xQL8Y'
@@ -53,17 +70,21 @@ export default {
             };
             
             this.isMoviesLoading = true;
-            fetch(`https://api.themoviedb.org/3/movie/popular?language=ru-RU&page=${this.currentPage}`, options)
-            .then(response => response.json())
-            .finally(() => this.isMoviesLoading = false)
-            .then(response => {
-                this.movies = response.results;
-                this.totalPages = response.total_pages;
+
+            axios.request(options)
+            .then((response) => {
+                this.movies = response.data.results;
+                this.totalPages = response.data.total_pages;
             })
-            .catch(err => console.error(err));
+            .finally(() => this.isMoviesLoading = false)
+            .catch((error) => console.error(error));
         },
         onPageChange(page) {
             this.currentPage = page;
+            this.getMovies();
+        },
+        onFilterChange(params) {
+            this.filterParams = params;
             this.getMovies();
         }
     }
