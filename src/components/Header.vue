@@ -10,16 +10,13 @@
                 <img src="https://s2.bunnycdn.ru/assets/sites/zoro/logo.png" class="w-24" alt="logo">
             </div>
             <div class="grow"></div>
-            <div class="flex-none relative my-auto mx-2">
-                <input
-                type="search"
-                class="block w-64 p-1 text-sm text-gray-600 flex-auto rounded-sm border border-solid border-gray-700 bg-clip-padding px-3 font-normal leading-[1.6] outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-gray-600 focus:text-gray-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none"
-                :value="searchQuery"
-                placeholder="Search"
-                aria-label="Search"
-                aria-describedby="button-addon1" />
-                <button class="absolute right-2 top-1"><font-awesome-icon class="text-midnight" :icon="['fas', 'search']"/></button>
-            </div>
+            <SearchInput v-click-away="away" v-model="searchQuery">
+                <SearchSuggestion>
+                    <SearchSuggestionElement v-for="(result, index) of searchResults">
+                        {{ result.title }}
+                    </SearchSuggestionElement>
+                </SearchSuggestion>
+            </SearchInput>
             <div class="flex-none my-auto mx-2 justify-self-end">
                 <button class="w-full px-5 py-2 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-purple-600 rounded-md sm:mx-2 sm:order-2 sm:w-auto hover:bg-purple-500 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-20">Login</button>
             </div>
@@ -28,10 +25,57 @@
 </template>
 
 <script>
+import { mixin as VueClickAway } from 'vue3-click-away';
+
+import SearchInput from './SearchInput.vue';
+import SearchSuggestion from './SearchSuggestion.vue';
+import SearchSuggestionElement from './SearchSuggestionElement.vue';
+
 export default {
+    mixins: [VueClickAway],
+    components: { SearchInput, SearchSuggestion, SearchSuggestionElement },
     data() {
         return {
-            searchQuery: ""
+            sharedState: {
+                active: false
+            },
+            searchQuery: "",
+            searchResults: [],
+        }
+    },
+    provide() {
+        return {
+            sharedState: this.sharedState
+        }
+    },
+
+    watch: {
+        searchQuery(newQuery, oldQuery) {
+            if (newQuery.length >= 5) {
+                this.getSearchResults();
+                this.sharedState.active = true;
+            } else {
+                this.sharedState.active = false;
+            }
+        }
+    },
+    methods: {
+        away() {
+            this.sharedState.active = false;
+        },
+        getSearchResults() {
+            const options = {
+                method: 'GET',
+                headers: {
+                    accept: 'application/json',
+                    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4ZGNiOTBlYmY3ZDE5NmRkNWQyMjRmMzg4MWM4M2JjZCIsInN1YiI6IjY0Y2Q5NzA5NTQ5ZGRhMDExYzI3M2ZlOSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.8hREDgRimJl9MjrwuqXNP81ptiRYyIxma3ki19xQL8Y'
+                }
+            };
+            
+            fetch(`https://api.themoviedb.org/3/search/movie?query=${this.searchQuery}&include_adult=false&language=ru-RU&page=1`, options)
+            .then(response => response.json())
+            .then(response => this.searchResults = response.results)
+            .catch(err => console.error(err));
         }
     }
 }
