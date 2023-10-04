@@ -10,13 +10,13 @@
                 <img src="https://s2.bunnycdn.ru/assets/sites/zoro/logo.png" class="w-24" alt="logo">
             </div>
             <div class="grow"></div>
-            <SearchInput v-click-away="away" v-model="searchQuery">
-                <SearchSuggestion>
-                    <SearchSuggestionElement v-for="(result, index) of searchResults">
-                        {{ result.title }}
-                    </SearchSuggestionElement>
-                </SearchSuggestion>
-            </SearchInput>
+            <HeaderSearch v-click-away="away" v-model="searchQuery">
+                <HeaderSearchSuggestion v-if="suggestionIsActive">
+                    <HeaderSearchSuggestionElement v-for="movie of sortedSearchResults" :key="movie.id">
+                        {{ movie.title }}
+                    </HeaderSearchSuggestionElement>
+                </HeaderSearchSuggestion>
+            </HeaderSearch>
             <div class="flex-none my-auto mx-2 justify-self-end">
                 <button class="w-full px-5 py-2 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-purple-600 rounded-md sm:mx-2 sm:order-2 sm:w-auto hover:bg-purple-500 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-20">Login</button>
             </div>
@@ -25,43 +25,48 @@
 </template>
 
 <script>
+import debounce from 'lodash.debounce';
 import { mixin as VueClickAway } from 'vue3-click-away';
 
-import SearchInput from './SearchInput.vue';
-import SearchSuggestion from './SearchSuggestion.vue';
-import SearchSuggestionElement from './SearchSuggestionElement.vue';
+import HeaderSearch from './HeaderSearch.vue';
+import HeaderSearchSuggestion from './HeaderSearchSuggestion.vue';
+import HeaderSearchSuggestionElement from './HeaderSearchSuggestionElement.vue';
 
 export default {
     mixins: [VueClickAway],
-    components: { SearchInput, SearchSuggestion, SearchSuggestionElement },
+    components: {
+        HeaderSearch,
+        HeaderSearchSuggestion,
+        HeaderSearchSuggestionElement
+    },
     data() {
         return {
-            sharedState: {
-                active: false
-            },
             searchQuery: "",
             searchResults: [],
         }
     },
-    provide() {
-        return {
-            sharedState: this.sharedState
+    computed: {
+        suggestionIsActive() {
+            return !!this.searchResults.length
+        },
+        sortedSearchResults() {
+            return this.searchResults.slice(0, 10)
         }
     },
-
     watch: {
-        searchQuery(newQuery, oldQuery) {
-            if (newQuery.length >= 5) {
-                this.getSearchResults();
-                this.sharedState.active = true;
-            } else {
-                this.sharedState.active = false;
-            }
+        searchQuery(...args) {
+            this.debouncedWatch(...args);
         }
+    },
+    created() {
+        this.debouncedWatch = debounce((newSearchQuery, oldSearchQuery) => {
+            console.log(newSearchQuery)
+            this.getSearchResults();
+        }, 600);
     },
     methods: {
         away() {
-            this.sharedState.active = false;
+            this.searchResults = false;
         },
         getSearchResults() {
             const options = {
