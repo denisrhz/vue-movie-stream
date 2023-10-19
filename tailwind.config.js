@@ -9,7 +9,8 @@ export default {
       colors: {
         transparent: 'transparent',
         current: 'currentColor',
-        midnight: '#1a1e1d',
+        night: '#1a1e1d',
+        midnight: '#2b3130',
         secondary: '#f7f7f7',
         primary: '#ff2985',
       }

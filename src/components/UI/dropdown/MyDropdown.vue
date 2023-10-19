@@ -1,6 +1,6 @@
 <template>
     <div v-click-away="away" class="relative mx-1 w-max">
-        <button @click="toggle" class="px-2 py-1.5 text-sm text-start tracking-wide text-white capitalize transition-colors duration-300 transform bg-gray-700 rounded-sm hover:bg-gray-600 focus:outline-none">
+        <button @click="toggle" class="px-2 py-1.5 text-sm text-start tracking-wide text-white capitalize transition-colors duration-300 bg-midnight rounded-sm hover:bg-neutral-600 focus:outline-none">
             <slot name="toggler"></slot>
             <span class="float-right pl-4"><font-awesome-icon :class="{'rotate-180': sharedState.active}" :icon="['fas', 'angle-down']"/></span>
         </button>

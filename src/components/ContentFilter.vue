@@ -13,7 +13,7 @@
                 </MyDropdownElement>
             </MyDropdownContent>
         </MyDropdown>
-        <button @click="onClickFilter()" class="px-2 mx-1 py-1.5 text-sm text-start tracking-wide text-white capitalize transition-colors duration-300 transform bg-gray-700 rounded-sm hover:bg-gray-600 focus:outline-none">
+        <button @click="onClickFilter()" class="px-2 mx-1 py-1.5 text-sm text-start tracking-wide text-white capitalize transition-colors duration-300 transform bg-purple-700 rounded-sm hover:bg-purple-600 focus:outline-none">
             <span class=""><font-awesome-icon :icon="['fas', 'filter']" /></span>
             Filter
         </button>

@@ -10,8 +10,8 @@
             <a href="#" class="hover:text-purple-500 text-sm text-gray-400 -mt-1"> 78.4K viewers </a>
             
             <div class="flex flex-row flex-wrap gap-2">
-                <a href="#" class="hover:bg-gray-600 text-gray-300 text-xs font-semibold bg-gray-700 px-2 py-1 rounded-full"> Shooter </a>
-                <a href="#" class="hover:bg-gray-600 text-gray-300 text-xs font-semibold bg-gray-700 px-2 py-1 rounded-full"> FPS </a>
+                <a href="#" class="hover:bg-gray-600 text-gray-300 text-xs font-semibold bg-midnight px-2 py-1 rounded-full"> Shooter </a>
+                <a href="#" class="hover:bg-gray-600 text-gray-300 text-xs font-semibold bg-midnight px-2 py-1 rounded-full"> FPS </a>
             </div>      
         </div>
     </div>
@@ -21,15 +21,15 @@
 import { RouterLink } from 'vue-router';
 
 export default {
-    computed: {
-        posterPath() {
-            return 'https://image.tmdb.org/t/p/w500/' + this.movie.poster_path
-        }
-    },
     props: {
         movie: {
             type: Object,
             required: true
+        }
+    },
+    computed: {
+        posterPath() {
+            return 'https://image.tmdb.org/t/p/w500/' + this.movie.poster_path
         }
     },
     components: { RouterLink }

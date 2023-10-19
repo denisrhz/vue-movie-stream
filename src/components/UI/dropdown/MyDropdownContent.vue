@@ -1,5 +1,5 @@
 <template>
-    <div v-if="active" class="absolute overflow-auto max-h-80 grid w-max py-1 bg-gray-700 rounded-sm top-10 z-10">
+    <div v-if="active" class="absolute overflow-auto max-h-80 grid w-max py-1 bg-midnight rounded-sm top-10 z-10">
         <slot></slot>
     </div>
 </template>

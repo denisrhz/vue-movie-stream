@@ -1,5 +1,5 @@
 <template>
-    <header class="bg-midnight drop-shadow-md">
+    <header class="bg-night drop-shadow-md">
         <div class="flex p-2">
             <div class="flex-none my-auto">
                 <button class="p-1">
