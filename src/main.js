@@ -6,7 +6,7 @@ import App from './App.vue'
 /* Fontawesome */
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faBars, faSearch , faAngleLeft, faAngleRight, faAngleDown, faFilter} from '@fortawesome/free-solid-svg-icons'
+import { faBars, faSearch , faAngleLeft, faAngleRight, faAngleDown, faFilter, faStar} from '@fortawesome/free-solid-svg-icons'
 
 import HomeView from './views/HomeView.vue'
 import MoviesView from './views/MoviesView.vue'
@@ -21,7 +21,7 @@ const router = createRouter({
     ]
 })
 
-library.add(faBars, faSearch, faAngleLeft, faAngleRight, faAngleDown, faFilter)
+library.add(faBars, faSearch, faAngleLeft, faAngleRight, faAngleDown, faFilter, faStar)
 
 createApp(App)
 .use(router)

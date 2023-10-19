@@ -11,11 +11,11 @@
             </div>
             <div class="grow"></div>
             <HeaderSearch v-click-away="away" v-model="searchQuery">
-                <HeaderSearchSuggestion v-if="suggestionIsActive">
-                    <HeaderSearchSuggestionElement v-for="movie of sortedSearchResults" :key="movie.id">
-                        {{ movie.title }}
-                    </HeaderSearchSuggestionElement>
-                </HeaderSearchSuggestion>
+                <ContentList v-if="suggestionIsActive"
+                class="absolute overflow-auto flex flex-col w-full py-1 bg-midnight rounded-sm top-10">
+                    <ContentListElement v-for="movie of sortedSearchResults" :key="movie.id" :movie="movie">
+                    </ContentListElement>
+                </ContentList>
             </HeaderSearch>
             <div class="flex-none my-auto mx-2 justify-self-end">
                 <button class="w-full px-5 py-2 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-purple-600 rounded-md sm:mx-2 sm:order-2 sm:w-auto hover:bg-purple-500 focus:outline-none focus:ring focus:ring-purple-300 focus:ring-opacity-20">Login</button>
@@ -29,15 +29,15 @@ import debounce from 'lodash.debounce';
 import { mixin as VueClickAway } from 'vue3-click-away';
 
 import HeaderSearch from './HeaderSearch.vue';
-import HeaderSearchSuggestion from './HeaderSearchSuggestion.vue';
-import HeaderSearchSuggestionElement from './HeaderSearchSuggestionElement.vue';
+import ContentList from './ContentList.vue';
+import ContentListElement from './ContentListElement.vue';
 
 export default {
     mixins: [VueClickAway],
     components: {
         HeaderSearch,
-        HeaderSearchSuggestion,
-        HeaderSearchSuggestionElement
+        ContentList,
+        ContentListElement
     },
     data() {
         return {
@@ -60,7 +60,6 @@ export default {
     },
     created() {
         this.debouncedWatch = debounce((newSearchQuery, oldSearchQuery) => {
-            console.log(newSearchQuery)
             this.getSearchResults();
         }, 600);
     },

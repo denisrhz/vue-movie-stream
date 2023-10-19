@@ -19,7 +19,9 @@
             </div>
             <div class="">
                 <h3 class="my-3 text-2xl text-primary">Лучшие</h3>
-                <ContentList/>
+                <!-- <ContentList>
+                    <ContentListElement class="min-w-[250px] shadow-lg"/>
+                </ContentList> -->
             </div>
         </div>
     </div>
@@ -31,10 +33,17 @@ import axios from 'axios';
 import ContentFilter from '../components/ContentFilter.vue';
 import ContentGrid from '../components/ContentGrid.vue';
 import ContentList from '../components/ContentList.vue';
+import ContentListElement from '../components/ContentListElement.vue';
 import Pagination from '../components/Pagination.vue';
 
 export default {
-    components: { ContentFilter, ContentGrid, ContentList, Pagination },
+    components: { 
+        ContentFilter,
+        ContentGrid,
+        ContentList,
+        ContentListElement,
+        Pagination 
+    },
     data() {
         return {
             movies: [],
