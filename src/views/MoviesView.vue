@@ -19,9 +19,9 @@
             </div>
             <div class="">
                 <h3 class="my-3 text-2xl text-primary">Лучшие</h3>
-                <!-- <ContentList>
-                    <ContentListElement class="min-w-[250px] shadow-lg"/>
-                </ContentList> -->
+                <ContentList>
+                    <ContentListElement v-for="movie of NowPlayingMovies" :key="movie.id" :movie="movie" class="min-w-[250px] shadow-lg"/>
+                </ContentList>
             </div>
         </div>
     </div>
@@ -47,6 +47,7 @@ export default {
     data() {
         return {
             movies: [],
+            NowPlayingMovies: [],
             isMoviesLoading: false,
             currentPage: 1,
             totalPages: 1,
@@ -55,6 +56,7 @@ export default {
     },
     mounted() {
         this.getMovies()
+        this.getNowPlayingMovies();
     },
     methods: {
         getMovies() {
@@ -80,13 +82,30 @@ export default {
             };
             
             this.isMoviesLoading = true;
-
+            
             axios.request(options)
             .then((response) => {
                 this.movies = response.data.results;
                 this.totalPages = response.data.total_pages;
             })
             .finally(() => this.isMoviesLoading = false)
+            .catch((error) => console.error(error));
+        },
+        getNowPlayingMovies() {
+            const options = {
+                method: 'GET',
+                url: 'https://api.themoviedb.org/3/movie/now_playing',
+                params: {language: 'ru-RU', page: '1'},
+                headers: {
+                    accept: 'application/json',
+                    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4ZGNiOTBlYmY3ZDE5NmRkNWQyMjRmMzg4MWM4M2JjZCIsInN1YiI6IjY0Y2Q5NzA5NTQ5ZGRhMDExYzI3M2ZlOSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.8hREDgRimJl9MjrwuqXNP81ptiRYyIxma3ki19xQL8Y'
+                }
+            };
+            
+            axios.request(options)
+            .then((response) => {
+                this.NowPlayingMovies = response.data.results;
+            })
             .catch((error) => console.error(error));
         },
         onPageChange(page) {
