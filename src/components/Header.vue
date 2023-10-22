@@ -1,16 +1,19 @@
 <template>
+    <SideBar :active="isSideBarActive" @sidebarclose="this.isSideBarActive = false" v-click-away="awaySideBar"></SideBar>
     <header class="bg-night drop-shadow-md">
         <div class="flex p-2">
             <div class="flex-none my-auto">
-                <button class="p-1">
-                    <font-awesome-icon :icon="['fas', 'bars']" size="lg" class=""/>
+                <button
+                @click="toggleSideBar"
+                class="p-1">
+                    <font-awesome-icon :icon="['fas', 'bars']" size="lg" />
                 </button>
             </div>
             <div class="flex-none my-auto mx-3">
                 <img src="https://s2.bunnycdn.ru/assets/sites/zoro/logo.png" class="w-24" alt="logo">
             </div>
             <div class="grow"></div>
-            <HeaderSearch v-click-away="away" v-model="searchQuery">
+            <HeaderSearch v-click-away="awaySearch" v-model="searchQuery">
                 <ContentList v-if="suggestionIsActive"
                 class="absolute overflow-auto flex flex-col w-full py-1 bg-midnight rounded-sm top-10">
                     <ContentListElement v-for="movie of sortedSearchResults" :key="movie.id" :movie="movie">
@@ -31,18 +34,21 @@ import { mixin as VueClickAway } from 'vue3-click-away';
 import HeaderSearch from './HeaderSearch.vue';
 import ContentList from './ContentList.vue';
 import ContentListElement from './ContentListElement.vue';
+import SideBar from './SideBar.vue';
 
 export default {
     mixins: [VueClickAway],
     components: {
         HeaderSearch,
         ContentList,
-        ContentListElement
+        ContentListElement,
+        SideBar
     },
     data() {
         return {
             searchQuery: "",
             searchResults: [],
+            isSideBarActive: false
         }
     },
     computed: {
@@ -64,8 +70,14 @@ export default {
         }, 600);
     },
     methods: {
-        away() {
+        awaySearch() {
             this.searchResults = false;
+        },
+        awaySideBar() {
+            this.isSideBarActive = false;
+        },
+        toggleSideBar() {
+            this.isSideBarActive = !this.isSideBarActive;
         },
         getSearchResults() {
             const options = {
