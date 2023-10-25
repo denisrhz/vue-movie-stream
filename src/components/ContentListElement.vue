@@ -1,9 +1,8 @@
 <template>
-    <RouterLink :to="`movies/${movie.id}`" class="flex items-start p-1">
-        <div class="flex-none">
-            <img class="w-16" :src="posterPath" alt="">
+    <RouterLink :to="`movies/${movie.id}`" class="flex items-start p-1 mb-1">
+        <div class="flex-none w-2/6">
+            <img class="w-max shadow-sm" :src="posterPath" alt="">
         </div>
-        
         <div class="ml-4">
             <h2 class="font-semibold whitespace-pre-wrap">{{ movie.title }}</h2>
             <p class="mt-1 text-sm text-gray-300">

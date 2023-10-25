@@ -1,12 +1,11 @@
 <template>
     <div class="container mx-auto">
         <div class="flex flex-wrap lg:flex-nowrap">
-            <div class="">
-                <h1 class="my-3 text-2xl text-primary">Смотреть сериалы онлайн</h1>
-                <p class="text-sm">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad error ut ducimus voluptate fugit rem dolorem cupiditate architecto vitae soluta a, odio neque? Fugiat, nobis delectus? Reprehenderit impedit modi obcaecati!</p>
+            <div class="m-3">
+                <h1 class="mb-3 text-primary text-3xl">Смотреть сериалы онлайн</h1>
                 <ContentFilter
                 @filterchanged="onFilterChange"
-                />
+                class="ml-2"/>
                 <ContentGrid v-if="!isMoviesLoading" :movies="movies"/>
                 <div v-else>
                     <h1 class="text-red-600">Loading...</h1>
@@ -17,10 +16,10 @@
                 @pagechanged="onPageChange"
                 />
             </div>
-            <div class="">
-                <h3 class="my-3 text-2xl text-primary">Лучшие</h3>
-                <ContentList>
-                    <ContentListElement v-for="movie of NowPlayingMovies" :key="movie.id" :movie="movie" class="min-w-[250px] shadow-lg"/>
+            <div class="m-3">
+                <h3 class="mb-3 text-3xl text-primary">Лучшие</h3>
+                <ContentList class="bg-midnight p-3 shadow-lg">
+                    <ContentListElement v-for="movie of NowPlayingMovies" :key="movie.id" :movie="movie" class="min-w-[280px]"/>
                 </ContentList>
             </div>
         </div>
